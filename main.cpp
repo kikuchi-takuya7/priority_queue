@@ -9,6 +9,8 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+const int INF = 2100100100;
+
 enum {
 	REFT,
 	RIGHT,
@@ -30,16 +32,17 @@ int main(void) {
 	using Graph = vector<vector<Edge>>;
 
 	// { distance, from }
-	using Pair = std::pair<long long, int>;
+	using Pair = std::pair<int, int>;
 
 	Graph v;
-
+	vector<vector<int>> dist;
 	int w = 0, h = 0;
 	cin >> h;
 	cin >> w;
 
 	for (int i = 0; i < h; i++) {
 		v.emplace_back(w);
+		dist.emplace_back(w);
 	}
 
 
@@ -50,26 +53,21 @@ int main(void) {
 		}
 	}
 
-	int count = 1;
-	int x = 0, y = 0;
-	int xt = 0, yt = 0;
-	while (true)
-	{
-		if (x < w) x++;
-		if (v.at(x).at(y).to == 0) {
-			count++;
-		}
-		else {
-			x--;
-		}
 
-		if (y < h) y++;
-		if (v.at(xt).at(y).to == 0) {
-			count++;
-		}
-		else {
-			y--;
-		}
+	std::queue<Pair> que;
+	que.emplace(0, 0);
+	dist.front() = { 0,0 };
+	dist.assign(h, vector<int>(w, INF));
+
+	int y[4] = { 0,0,1,-1 };
+	int x[4] = { 1,-1,0,0 };
+
+	while (!que.empty())
+	{
+		Pair now = que.front();
+		que.pop();
+
+
 
 	}
 
