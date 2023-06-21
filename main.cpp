@@ -3,6 +3,7 @@
 #include <utility> // std::pair
 #include <queue> // std::priority_queue
 #include <functional> // std::greater
+#include <algorithm>
 
 using std::vector;
 using std::cin;
