@@ -12,14 +12,6 @@ using std::endl;
 const int INF = 0;//‚Ü‚¾’Tõ‚µ‚Ä‚¢‚È‚¢
 const int DONE = 1;//’TõÏ‚İ
 
-enum {
-	REFT,
-	RIGHT,
-	UP,
-	DOWN
-
-};
-
 struct Edge
 {
 	// s‚«~‚Ü‚è‚©‚Ç‚¤‚©
