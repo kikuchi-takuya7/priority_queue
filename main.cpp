@@ -51,7 +51,7 @@ int main(void) {
 	std::priority_queue<Pair, vector<Pair>, std::greater<Pair>> que; //探索済みの場所を記憶しておく。二次元配列じゃなくてPair型なのはわざわざ行き止まりの所を記録する必要はないため、一度行った場所だけを座標で横並びで覚えておけばいい
 	que.emplace(0, 0);//スタート地点から探索を始める（paizaは左上からだったため０、０）
 	dist.assign(h, vector<long long>(w, INF));//初期化
-	dist.at(0).at(0) = 0; //最初は既に探索済みのため
+	dist.at(0).at(0) = v.at(0).at(0); //スタート地点のコストを入れる
 	//dist.front() = { 0,0 };
 
 	while (!que.empty())
