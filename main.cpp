@@ -91,5 +91,26 @@ int main(void) {
 
 	cout << dist.at(h - 1).at(w - 1);//パイザは右下がゴールのためゴールの位置をごり押しで表示しちゃった
 
+	for (int i = 0; i < h; i++) {
+		for (int f = 0; f < w; f++) {
+			
+		}
+	}
+
+	while (true)
+	{
+		cout << "--" << endl;
+		for (int i = 0; i < h; i++) {
+			for (int f = 0; f < w; f++) {
+				
+				
+
+				cout << v.at(i).at(f);
+
+				
+			}
+		}
+	}
+
     return 0;
 }
