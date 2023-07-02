@@ -47,7 +47,7 @@ int main(void) {
 			//dist.at(i).at(f) = n;
 		}
 	}
-
+	//queを使って今までの最短距離じゅんに並べて小さいほうから探索することで余分な処理を減らすのかも。大きいのやった後に小さいのとかやったら当然意味ないし
 	std::priority_queue<Pair, vector<Pair>, std::greater<Pair>> que; //探索済みの場所を記憶しておく。二次元配列じゃなくてPair型なのはわざわざ行き止まりの所を記録する必要はないため、一度行った場所だけを座標で横並びで覚えておけばいい
 	que.emplace(0, 0);//スタート地点から探索を始める（paizaは左上からだったため０、０）
 	dist.assign(h, vector<long long>(w, INF));//初期化
@@ -80,15 +80,16 @@ int main(void) {
 			//if (dist.at(ny).at(nx) != INF) { //探索済みなら
 			//	continue;
 			//}
-			if (dist.at(ny).at(nx) <= dist.at(now.first).at(now.second) + v.at(ny).at(nx)) { //これから探索するところが最短距離か
+			if (dist.at(ny).at(nx) <= dist.at(now.first).at(now.second) + v.at(ny).at(nx)) { //これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
+                                                                                             //今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
 				continue;
 			}
 			que.emplace(ny, nx);
-			dist.at(ny).at(nx) = dist.at(now.first).at(now.second) + v.at(ny).at(nx);
+			dist.at(ny).at(nx) = dist.at(now.first).at(now.second) + v.at(ny).at(nx);//最短距離の更新
 		}
 	}
 
-	cout << dist.at(h - 1).at(w - 1);
+	cout << dist.at(h - 1).at(w - 1);//パイザは右下がゴールのためゴールの位置をごり押しで表示しちゃった
 
     return 0;
 }
