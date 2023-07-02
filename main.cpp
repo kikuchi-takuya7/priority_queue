@@ -13,6 +13,9 @@ using std::endl;
 const int INF = 9999999;//まだ探索していない
 const int DONE = 1;//探索済み
 
+int dy[4] = { 0,0,1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
+int dx[4] = { 1,-1,0,0 };
+
 struct Edge
 {
 	// 行き止まりかどうか
@@ -64,8 +67,7 @@ int main(void) {
 		//	break;
 		//}
 
-		int dy[4] = { 0,0,1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-		int dx[4] = { 1,-1,0,0 };
+	
 		for (int i = 0; i < 4; i++) {
 			int ny = now.first;//今いる場所
 			int nx = now.second;
@@ -91,8 +93,22 @@ int main(void) {
 
 	cout << dist.at(h - 1).at(w - 1);//パイザは右下がゴールのためゴールの位置をごり押しで表示しちゃった
 
+	Pair rest;
+
+	rest = std::make_pair(0, 0);
+
 	for (int i = 0; i < h; i++) {
 		for (int f = 0; f < w; f++) {
+			std::priority_queue<int, vector<int>, std::greater<int>> n;//これに上下４つの変数を入れて最小の値をrestに入れるでいいと思う
+			for (int n = 0; n < 4; n++) {
+				int ny = h;
+				int nx = w;
+				ny += dy[n];//この処理を上と一緒にやっちゃうと配列の要素の外に行ってしまうため別々これから探索する場所
+				nx += dx[n];
+
+				//ここで上下左右の4つのdistの値をくらべて一番小さかった奴をrestに入れる
+				dist.at(ny).at(nx);
+			}
 			
 		}
 	}
