@@ -33,6 +33,7 @@ int main(void) {
 
 	Graph v;    //マップの情報を入れる
 	Graph dist; //マップの位置に連動してその頂点までどのぐらいの数で行けるか追加する
+	vector<vector<Pair>> rest; //経路復元に使用
 	int w = 0, h = 0;
 	cin >> h;
 	cin >> w;
@@ -40,6 +41,7 @@ int main(void) {
 	for (int i = 0; i < h; i++) {
 		v.emplace_back(w);//w分の行を先にh列分だけ確保しておく
 		dist.emplace_back(w);
+		rest.emplace_back(w);
 	}
 
 	for (int i = 0; i < h; i++) {
@@ -55,7 +57,8 @@ int main(void) {
 	que.emplace(0, 0);//スタート地点から探索を始める（paizaは左上からだったため０、０）
 	dist.assign(h, vector<long long>(w, INF));//初期化
 	dist.at(0).at(0) = v.at(0).at(0); //スタート地点のコストを入れる
-	//dist.front() = { 0,0 };
+	rest = vector<vector<Pair> >(h, vector<Pair>(w, Pair(-1, -1)));
+
 
 	while (!que.empty())
 	{
@@ -87,31 +90,14 @@ int main(void) {
 				continue;
 			}
 			que.emplace(ny, nx);
+			rest.at(ny).at(nx) = std::make_pair(now.first, now.second); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
 			dist.at(ny).at(nx) = dist.at(now.first).at(now.second) + v.at(ny).at(nx);//最短距離の更新
 		}
 	}
 
 	cout << dist.at(h - 1).at(w - 1);//パイザは右下がゴールのためゴールの位置をごり押しで表示しちゃった
 
-	Pair rest;
-
-	rest = std::make_pair(0, 0);
-
-	for (int i = 0; i < h; i++) {
-		for (int f = 0; f < w; f++) {
-			std::priority_queue<int, vector<int>, std::greater<int>> n;//これに上下４つの変数を入れて最小の値をrestに入れるでいいと思う
-			for (int n = 0; n < 4; n++) {
-				int ny = h;
-				int nx = w;
-				ny += dy[n];//この処理を上と一緒にやっちゃうと配列の要素の外に行ってしまうため別々これから探索する場所
-				nx += dx[n];
-
-				//ここで上下左右の4つのdistの値をくらべて一番小さかった奴をrestに入れる
-				dist.at(ny).at(nx);
-			}
-			
-		}
-	}
+	
 
 	while (true)
 	{
