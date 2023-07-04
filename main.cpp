@@ -33,7 +33,8 @@ int main(void) {
 
 	Graph v;    //マップの情報を入れる
 	Graph dist; //マップの位置に連動してその頂点までどのぐらいの数で行けるか追加する
-	vector<vector<PP>> rest; //経路復元に使用するため、この中にはコストと一個前にいたxy座標を入れておく
+	vector<vector<PP>> rest; //経路復元に使用するため、この中には一個前にいた座標のコストとxy座標を入れておく
+
 	int w = 0, h = 0;
 	cin >> h;
 	cin >> w;
@@ -49,15 +50,16 @@ int main(void) {
 			int n = 0;
 			cin >> n;
 			v.at(i).at(f) = n;
-			//dist.at(i).at(f) = n;
+			rest[i][f].second = Pair(i, f); //restにxy座標を入れる
 		}
 	}
+
 	//queを使って今までの最短距離じゅんに並べて小さいほうから探索することで余分な処理を減らすのかも。大きいのやった後に小さいのとかやったら当然意味ないし
 	std::priority_queue<Pair, vector<Pair>, std::greater<Pair>> que; //探索済みの場所を記憶しておく。二次元配列じゃなくてPair型なのはわざわざ行き止まりの所を記録する必要はないため、一度行った場所だけを座標で横並びで覚えておけばいい
 	que.emplace(0, 0);//スタート地点から探索を始める（paizaは左上からだったため０、０）
 	dist.assign(h, vector<long long>(w, INF));//初期化
 	dist.at(0).at(0) = v.at(0).at(0); //スタート地点のコストを入れる
-	rest.at(0).at(0) = PP(-1, Pair(-1, -1));
+	rest.at(0).at(0) = PP(-1, Pair(0, 0));
 
 
 	while (!que.empty())
@@ -69,13 +71,12 @@ int main(void) {
 		//	cout << dist.at(now.first).at(now.second);
 		//	break;
 		//}
-
 	
 		for (int i = 0; i < 4; i++) {
 			int ny = now.first;//今いる場所
 			int nx = now.second;
 			int sy = ny + dy[i];//この処理を上と一緒にやっちゃうと配列の要素の外に行ってしまうため別々これから探索する場所
-			int sx = nx + dx[i];
+			int sx = nx + dx[i];//今から探索する場y祖
 			if (sy < 0 || sy >= h || sx < 0 || sx >= w) {// 画面外なら
 				continue;
 			}
@@ -90,38 +91,71 @@ int main(void) {
 				continue;
 			}
 			que.emplace(sy, sx);
-			rest.at(sy).at(sx) = PP(dist[ny][nx], std::make_pair(ny, nx)); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+			rest.at(sy).at(sx).first = dist[ny][nx]; //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+			rest[sy][sx].second = Pair(ny, nx); //前にいた位置を覚えておいて後でループにつかう
 			dist.at(sy).at(sx) = dist.at(ny).at(nx) + v.at(sy).at(sx);//最短距離の更新
 		}
 	}
 
-	cout << dist.at(h - 1).at(w - 1);//パイザは右下がゴールのためゴールの位置をごり押しで表示しちゃった
+	cout << dist.at(h - 1).at(w - 1) << endl;//パイザは右下がゴールのためゴールの位置をごり押しで表示しちゃった
 
-	
+	std::priority_queue<Pair> tmp; //パイザはゴールからスタート地点に向かってるため大きい順に並び替える
 
-	while (true)
-	{
+	//最初にこの処理を上下左右探索して元居た場所がわかったらその位置にフラグを立てるみたいな
 
-		//最初にこの処理を上下左右探索して元居た場所がわかったらその位置にフラグを立てるみたいな
-		for (int i = 0; i < h; i++) {
-			for (int f = 0; f < w; f++) {
-				for (int n = 0; n < 4; n++) {
-					if (rest[h - i - 1][w - f - 1] == PP(dist[h - i - 1 + dy[n]][w - f - 1 + dx[n]], rest[h - i - 1][w - f - 1].second));
-				}
-			}
-		}
+	int i = h - 1;
+	int f = w - 1;
+
+	while (true) {
 		
-		cout << "--" << endl;
-		for (int i = 0; i < h; i++) {
-			for (int f = 0; f < w; f++) {
-				
-				
-				cout << v.at(i).at(f);
-
-				
+		for (int n = 0; n < 4; n++) {
+			int y = i;
+			int x = f;
+			y += dy[n];
+			x += dx[n];
+			if (y < 0 || y >= h || x < 0 || x >= w) {// 画面外なら
+				continue;
+			}
+			if (rest[i][f].first == -1) {
+				//break;
+			}
+			if (rest[i][f].first == dist[y][x]) {
+				tmp.emplace(rest[i][f].second); //通ってきた座標を入れる
+				i = rest[i][f].second.first; //ここには前通ってきた座標が入ってるはずだから次はこのxy座標の上下左右を探索してみようってこと
+				f = rest[i][f].second.second;
+				//continue;
+			}
+			if (i == 0 && f == 0) {
+				break;
 			}
 		}
 	}
+	
+
+	
+	
+	while (!tmp.empty()) {
+
+		cout << "--" << endl;
+		for (int i = 0; i < h; i++) {
+			for (int f = 0; f < w; f++) {
+
+				if (tmp.top() == Pair(i, f)) {
+					cout << "*";
+					tmp.pop();
+				}
+				else {
+					cout << " ";
+				}
+
+				cout << v.at(i).at(f);
+
+
+			}
+			cout << endl;
+		}
+	}
+
 
     return 0;
 }
