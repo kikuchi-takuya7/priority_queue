@@ -28,12 +28,12 @@ int main(void) {
 
 	// { distance, from }
 	using Pair = std::pair<long long, long long>;
-
+	using PP = std::pair<long long, Pair>;
 	using Graph = vector<vector<long long>>;
 
 	Graph v;    //マップの情報を入れる
 	Graph dist; //マップの位置に連動してその頂点までどのぐらいの数で行けるか追加する
-	vector<vector<Pair>> rest; //経路復元に使用
+	vector<vector<PP>> rest; //経路復元に使用するため、この中にはコストと一個前にいたxy座標を入れておく
 	int w = 0, h = 0;
 	cin >> h;
 	cin >> w;
@@ -57,7 +57,7 @@ int main(void) {
 	que.emplace(0, 0);//スタート地点から探索を始める（paizaは左上からだったため０、０）
 	dist.assign(h, vector<long long>(w, INF));//初期化
 	dist.at(0).at(0) = v.at(0).at(0); //スタート地点のコストを入れる
-	rest = vector<vector<Pair> >(h, vector<Pair>(w, Pair(-1, -1)));
+	rest.at(0).at(0) = PP(-1, Pair(-1, -1));
 
 
 	while (!que.empty())
@@ -74,9 +74,9 @@ int main(void) {
 		for (int i = 0; i < 4; i++) {
 			int ny = now.first;//今いる場所
 			int nx = now.second;
-			ny += dy[i];//この処理を上と一緒にやっちゃうと配列の要素の外に行ってしまうため別々これから探索する場所
-			nx += dx[i];
-			if (ny < 0 || ny >= h || nx < 0 || nx >= w) {// 画面外なら
+			int sy = ny + dy[i];//この処理を上と一緒にやっちゃうと配列の要素の外に行ってしまうため別々これから探索する場所
+			int sx = nx + dx[i];
+			if (sy < 0 || sy >= h || sx < 0 || sx >= w) {// 画面外なら
 				continue;
 			}
 			//if (v.at(ny).at(nx) == 1) {// 行き止まりなら
@@ -85,13 +85,13 @@ int main(void) {
 			//if (dist.at(ny).at(nx) != INF) { //探索済みなら
 			//	continue;
 			//}
-			if (dist.at(ny).at(nx) <= dist.at(now.first).at(now.second) + v.at(ny).at(nx)) { //これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
+			if (dist.at(sy).at(sx) <= dist.at(ny).at(nx) + v.at(sy).at(sx)) { //これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
                                                                                              //今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
 				continue;
 			}
-			que.emplace(ny, nx);
-			rest.at(ny).at(nx) = std::make_pair(now.first, now.second); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
-			dist.at(ny).at(nx) = dist.at(now.first).at(now.second) + v.at(ny).at(nx);//最短距離の更新
+			que.emplace(sy, sx);
+			rest.at(sy).at(sx) = PP(dist[ny][nx], std::make_pair(ny, nx)); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+			dist.at(sy).at(sx) = dist.at(ny).at(nx) + v.at(sy).at(sx);//最短距離の更新
 		}
 	}
 
@@ -101,12 +101,21 @@ int main(void) {
 
 	while (true)
 	{
+
+		//最初にこの処理を上下左右探索して元居た場所がわかったらその位置にフラグを立てるみたいな
+		for (int i = 0; i < h; i++) {
+			for (int f = 0; f < w; f++) {
+				for (int n = 0; n < 4; n++) {
+					if (rest[h - i - 1][w - f - 1] == PP(dist[h - i - 1 + dy[n]][w - f - 1 + dx[n]], rest[h - i - 1][w - f - 1].second));
+				}
+			}
+		}
+		
 		cout << "--" << endl;
 		for (int i = 0; i < h; i++) {
 			for (int f = 0; f < w; f++) {
 				
 				
-
 				cout << v.at(i).at(f);
 
 				
