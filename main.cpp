@@ -100,53 +100,56 @@ int main(void) {
 	cout << dist.at(h - 1).at(w - 1) << endl;//パイザは右下がゴールのためゴールの位置をごり押しで表示しちゃった
 
 	std::priority_queue<Pair> tmp; //パイザはゴールからスタート地点に向かってるため大きい順に並び替える
-
+	
 	//最初にこの処理を上下左右探索して元居た場所がわかったらその位置にフラグを立てるみたいな
-
 	int i = h - 1;
 	int f = w - 1;
+
+	tmp.emplace(i, f);//ゴール地点だけあらかじめ入れとく
 
 	while (true) {
 		
 		for (int n = 0; n < 4; n++) {
 			int y = i;
 			int x = f;
-			y += dy[n];
+			y += dy[n]; //上下探索
 			x += dx[n];
 			if (y < 0 || y >= h || x < 0 || x >= w) {// 画面外なら
 				continue;
 			}
-			if (rest[i][f].first == -1) {
+			//if (rest[i][f].first == -1) {
 				//break;
+			//}
+			if (rest[i][f].second != Pair(y,x)) {//上下探索する時の座標とrestに入ってるその場所に行く前に居た座標と照らし合わせてその値が同じならtmpに入れる
+				continue;
 			}
-			if (rest[i][f].first == dist[y][x]) {
-				tmp.emplace(rest[i][f].second); //通ってきた座標を入れる
-				i = rest[i][f].second.first; //ここには前通ってきた座標が入ってるはずだから次はこのxy座標の上下左右を探索してみようってこと
-				f = rest[i][f].second.second;
-				//continue;
-			}
-			if (i == 0 && f == 0) {
-				break;
-			}
+			tmp.emplace(rest[i][f].second); //通ってきた座標を入れる
+			i = y;  //ここには前通ってきた座標が入ってるはずだから次はこのxy座標の上下左右を探索してみようってこと
+			f = x;  //restの値だとなぜか曲がり角の
+		}
+		if (i == 0 && f == 0) {
+			break;
 		}
 	}
 	
 
 	
 	
-	while (!tmp.empty()) {
-
+	while (!tmp.empty()) { 
 		cout << "--" << endl;
 		for (int i = 0; i < h; i++) {
 			for (int f = 0; f < w; f++) {
 
-				if (tmp.top() == Pair(i, f)) {
+
+				if (!tmp.empty() && tmp.top() == Pair(i, f)) {
 					cout << "*";
 					tmp.pop();
 				}
 				else {
 					cout << " ";
 				}
+				
+				
 
 				cout << v.at(i).at(f);
 
