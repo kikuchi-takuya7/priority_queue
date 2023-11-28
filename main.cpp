@@ -4,14 +4,12 @@
 #include <queue>
 #include <functional> // std::greater
 #include <stack>
+#include"Astar.h"
 
 using std::vector;
 using std::cin;
 using std::cout;
 using std::endl;
-
-const int dy[4] = { 0,0,1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-const int dx[4] = { 1,-1,0,0 };
 
 using Pair = std::pair<long long, long long>; // { distance, from }
 using Graph = vector<vector<long long>>; //二次元配列上のグラフ
@@ -29,33 +27,12 @@ void Dijkstra(int h, int w, PqP& que, Graph& v, Graph& dist, vector<vector<Pair>
 //最短経路を座標で獲得
 void shortest_path(int h, int w, Graph& v, Graph& dist, vector<vector<Pair>>& rest, std::queue<Pair>& ans);
 
+//ダイクストラ法経路探索をする関数（まとめただけ）
+void DijkstraP();
+
+
 int main(void) {
 
-	Graph v;    //マップの情報を入れる
-	Graph dist; //マップの位置に連動してその頂点までどのぐらいの数で行けるか追加する
-	vector<vector<Pair>> rest; //経路復元に使用するため、この中には一個前にいたxy座標を入れておく
-
-	int w = 0, h = 0;
-	cin >> h;
-	cin >> w;
-
-	Input(h, w, v, dist, rest);
-
-	//queを使って今までの最短距離順に並べて小さいほうから探索することで余分な処理を減らす。大きいのやった後に小さいのとかやったら当然意味ないし
-	PqP que; //探索済みの場所を記憶しておく。一度行った場所だけを座標で横並びで覚えておけばいい
-	
-	Initialize(h, w, que, v, dist, rest);
-
-	Dijkstra(h, w, que, v, dist, rest);
-
-	std::queue<Pair> ans; //ゴールから座標を入れてってゴール側から取り出せるように
-
-	shortest_path(h, w, v, dist, rest, ans);
-
-	while (!ans.empty()) {
-		cout << ans.front().first << " " << ans.front().second << endl;
-		ans.pop();
-	}
 
     return 0;
 }
@@ -147,4 +124,34 @@ void shortest_path(int h, int w, Graph& v, Graph& dist, vector<vector<Pair>>& re
 		}
 	}
 
+}
+
+void DijkstraP()
+{
+	Graph v;    //マップの情報を入れる
+	Graph dist; //マップの位置に連動してその頂点までどのぐらいの数で行けるか追加する
+	vector<vector<Pair>> rest; //経路復元に使用するため、この中には一個前にいたxy座標を入れておく
+
+	//縦幅と横幅の入力
+	int w = 0, h = 0;
+	cin >> h;
+	cin >> w;
+
+	Input(h, w, v, dist, rest);
+
+	//queを使って今までの最短距離順に並べて小さいほうから探索することで余分な処理を減らす。大きいのやった後に小さいのとかやったら当然意味ないし
+	PqP que; //探索済みの場所を記憶しておく。一度行った場所だけを座標で横並びで覚えておけばいい
+
+	Initialize(h, w, que, v, dist, rest);
+
+	Dijkstra(h, w, que, v, dist, rest);
+
+	std::queue<Pair> ans; //ゴールから座標を入れてってゴール側から取り出せるように
+
+	shortest_path(h, w, v, dist, rest, ans);
+
+	while (!ans.empty()) {
+		cout << ans.front().first << " " << ans.front().second << endl;
+		ans.pop();
+	}
 }
