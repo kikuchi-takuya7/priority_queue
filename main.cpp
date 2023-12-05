@@ -36,7 +36,11 @@ void DijkstraP();
 
 int main(void) {
 
+	Astar* astar = new Astar;
 
+	astar->CreateAstar();
+
+	delete astar;
     return 0;
 }
 
@@ -144,9 +148,10 @@ void DijkstraP()
 
 	//queを使って今までの最短距離順に並べて小さいほうから探索することで余分な処理を減らす。大きいのやった後に小さいのとかやったら当然意味ないし
 	PqP que; //探索済みの場所を記憶しておく。一度行った場所だけを座標で横並びで覚えておけばいい
+	//new メモ　最近の研究によりpriorty内のペア型はfirstの値だけ判定して並び替えられることが判明いたしました。よってこの書き方意味なし！！！！！ばかあほどじまぬけ
 
 	Initialize(h, w, que, v, dist, rest);
-
+	
 	Dijkstra(h, w, que, v, dist, rest);
 
 	std::queue<Pair> ans; //ゴールから座標を入れてってゴール側から取り出せるように
