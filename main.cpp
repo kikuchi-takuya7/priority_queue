@@ -13,7 +13,10 @@ using std::endl;
 
 using Pair = std::pair<long long, long long>; // { distance, from }
 using Graph = vector<vector<long long>>; //二次元配列上のグラフ
-using PqP = std::priority_queue<Pair, vector<Pair>, std::greater<Pair>>; //昇順で要素を入れておく
+using PqP = std::priority_queue<Pair, vector<Pair>, std::greater<Pair>>; //昇順で要素を入れておく.昇順って小さい順って意味だからな
+
+const int dy[4] = { 0,0,1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
+const int dx[4] = { 1,-1,0,0 };
 
 //入力
 void Input(int _h, int _w, Graph& _v, Graph& _dist, vector<vector<Pair>>& _rest);
