@@ -17,6 +17,7 @@ void Astar::CreateAstar()
 	Astar_Basic();
 	Path_Search();
 
+	cout << "Y" << " " << "X" << endl;
 	while (!ans_.empty()) {
 		cout << ans_.top().first << " " << ans_.top().second << endl;
 		ans_.pop();
@@ -109,22 +110,30 @@ void Astar::Astar_Basic()
 		que_.pop();
 
 		for (int i = 0; i < 4; i++) {
+
 			int ny = now.second.first;//¡‚¢‚éêŠ NowY
 			int nx = now.second.second;
 			int sy = ny + moveY[i];//¡‚©‚ç’Tõ‚·‚éêŠ SecondY
 			int sx = nx + moveX[i];
-			if (sy < 0 || sy >= h_ || sx < 0 || sx >= w_) {// ‰æ–ÊŠO‚È‚ç
+			
+			// ‰æ–ÊŠO‚È‚ç
+			if (sy < 0 || sy >= h_ || sx < 0 || sx >= w_) {
 				continue;
 			}
+
+			//•Ç‚È‚ç
 			if (map_.at(sy).at(sx) == -1) {
 				continue;
 			}
-			if (dist_.at(sy).at(sx) <= dist_.at(ny).at(nx) + map_.at(sy).at(sx)) { //‚±‚ê‚©‚ç’Tõ‚·‚é‚Æ‚±‚ë‚ª¡‚¢‚éˆÊ’u‚©‚çs‚­‚Æ‚»‚±‚Ü‚Å‚ÌÅ’Z‹——£idist{v‚ÌƒRƒXƒg•ª‚Å¡Œ»Ý‚í‚©‚Á‚Ä‚¢‚éÅ’Z‹——£j‚Å‚È‚¢‚È‚çB
-				continue;													  //¡‚©‚ç’Tõ‚µ‚æ‚¤‚Æ‚µ‚Ä‚éêŠ‚Í‚à‚µˆê“x‚às‚Á‚Ä‚È‚©‚Á‚½‚çINF‚ª“ü‚Á‚Ä‚Äâ‘ÎXV‚³‚ê‚é
+
+			//‚±‚ê‚©‚ç’Tõ‚·‚é‚Æ‚±‚ë‚ª¡‚¢‚éˆÊ’u‚©‚çs‚­‚Æ‚»‚±‚Ü‚Å‚ÌÅ’Z‹——£idist{v‚ÌƒRƒXƒg•ª‚Å¡Œ»Ý‚í‚©‚Á‚Ä‚¢‚éÅ’Z‹——£j‚Å‚È‚¢‚È‚çB
+			if (dist_.at(sy).at(sx) <= dist_.at(ny).at(nx) + map_.at(sy).at(sx)) { 
+				continue; //¡‚©‚ç’Tõ‚µ‚æ‚¤‚Æ‚µ‚Ä‚éêŠ‚Í‚à‚µˆê“x‚às‚Á‚Ä‚È‚©‚Á‚½‚çINF‚ª“ü‚Á‚Ä‚Äâ‘ÎXV‚³‚ê‚é
 			}
+			
 			rest_.at(sy).at(sx) = Pair(ny, nx); //Å’ZŒo˜H‚ªo‚½’TõÏ‚Ý‚ÌÀ•W‚É’Tõ‘O‚Ç‚±‚É‚¢‚½‚©‚Ìî•ñ‚ð“ü‚ê‚ÄŒã‚ÅŒo˜H•œŒ³‚ÉŽg‚¤
-			dist_.at(sy).at(sx) = dist_.at(ny).at(nx) + map_.at(sy).at(sx);//Å’Z‹——£‚ÌXV
-			long heuristicCost = Heuristic(sy, sx) + dist_.at(sy).at(sx);
+			dist_.at(sy).at(sx) = dist_.at(ny).at(nx) + map_.at(sy).at(sx) + Heuristic(sy, sx);//ƒqƒ…[ƒŠƒXƒeƒBƒbƒN•ª‚àž‚Ý‚ÅÅ’Z‹——£‚ÌXV
+			
 			que_.emplace( PP(dist_.at(sy).at(sx), Pair(sy, sx)));//ŽŸ‚Ì’TõŒó•â‚ð“ü‚ê‚Ä‚¨‚­
 		}
 	}
