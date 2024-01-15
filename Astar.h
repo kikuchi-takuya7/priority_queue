@@ -17,9 +17,13 @@ using Pair = pair<long long, long long>; // { distance, from }
 using Graph = vector<vector<long long>>; //二次元配列上のグラフ
 using PP = pair<long long, pair<int, int>>;//firstにコスト。secondにそのコストの位置と同じ座標を入れる
 using PqPP = std::priority_queue<PP, vector<PP>, std::greater<PP>>; //昇順で要素を入れておく.昇順って小さい順って意味だからな
-
+//new メモ　最近の研究によりpriorty内のペア型はfirstの値だけ判定して並び替えられることが判明いたしました。なので覚えておいてね
 
 //いろんなとこがyとx逆だから気を付けて
+
+/// <summary>
+/// ヒューリスティック分distに値足してるせいでコストの結果がヒューリスティック分増えちゃってるけど気にしないで。結果としては変わらないし効率的になってるからﾀﾌﾞﾝ
+/// </summary>
 class Astar
 {
 public:
@@ -59,5 +63,8 @@ private:
 	//その位置までのヒューリスティックとコストを合わせたりなんなりするところ
 
 	std::stack <Pair> ans_;
+
+	//どのぐらい試行回数重ねたのかの確認
+	int total_;
 };
 

@@ -22,6 +22,7 @@ void Astar::CreateAstar()
 		cout << ans_.top().first << " " << ans_.top().second << endl;
 		ans_.pop();
 	}
+	cout << total_ << endl;
 
 }
 
@@ -94,7 +95,7 @@ void Astar::Initialize()
 	h_ = -1;
 	w_ = -1;
 
-	
+	total_ = 0;
 
 	start_ = std::make_pair(-1, -1);//スタート地点から探索を始める
 	goal_ = std::make_pair(-1, -1);
@@ -110,6 +111,8 @@ void Astar::Astar_Basic()
 		que_.pop();
 
 		for (int i = 0; i < 4; i++) {
+
+			total_++;
 
 			int ny = now.second.first;//今いる場所 NowY
 			int nx = now.second.second;
@@ -127,14 +130,16 @@ void Astar::Astar_Basic()
 			}
 
 			//これから探索するところが今いる位置から行くとそこまでの最短距離（dist＋vのコスト分で今現在わかっている最短距離）でないなら。
-			if (dist_.at(sy).at(sx) <= dist_.at(ny).at(nx) + map_.at(sy).at(sx)) { 
+			if (dist_.at(sy).at(sx) <= dist_.at(ny).at(nx) + map_.at(sy).at(sx) + Heuristic(sy, sx)) {
 				continue; //今から探索しようとしてる場所はもし一度も行ってなかったらINFが入ってて絶対更新される
 			}
 			
 			rest_.at(sy).at(sx) = Pair(ny, nx); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
+
+			//コストにヒューリスティック分を足すことによって、もしそこまでの道が一番コストが低くても遠ざかってってる場合ヒューリスティック分でコスト増えるから結果コストが大きくなってより制度が高まる
 			dist_.at(sy).at(sx) = dist_.at(ny).at(nx) + map_.at(sy).at(sx) + Heuristic(sy, sx);//ヒューリスティック分も込みで最短距離の更新
 			
-			que_.emplace( PP(dist_.at(sy).at(sx), Pair(sy, sx)));//次の探索候補を入れておく
+			que_.emplace( PP(dist_.at(sy).at(sx), Pair(sy, sx)));//コストと共に次の探索候補を入れておく
 		}
 	}
 }
