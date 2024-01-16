@@ -64,7 +64,7 @@ void Astar::Input()
 	}
 
 	start_ = std::make_pair(y, x);//スタート地点から探索を始める
-	rest_.at(0).at(0) = Pair(y, x); //スタート地点の座標
+	rest_.at(y).at(x) = Pair(y, x); //スタート地点の座標
 	que_.emplace(0, Pair(y, x));//スタート地点から探索を始める
 
 	cout << "ゴール入力" << endl;
@@ -136,11 +136,11 @@ void Astar::Astar_Basic()
 			
 			rest_.at(sy).at(sx) = Pair(ny, nx); //最短経路が出た探索済みの座標に探索前どこにいたかの情報を入れて後で経路復元に使う
 
-			if (sy == goal_.first && sx == goal_.second)
-				break;
-
 			//コストにヒューリスティック分を足すことによって、もしそこまでの道が一番コストが低くても遠ざかってってる場合ヒューリスティック分でコスト増えるから結果コストが大きくなってより制度が高まる
 			dist_.at(sy).at(sx) = dist_.at(ny).at(nx) + map_.at(sy).at(sx) + Heuristic(sy, sx);//ヒューリスティック分も込みで最短距離の更新
+
+			if (sy == goal_.first && sx == goal_.second)
+				break;
 
 			que_.emplace( PP(dist_.at(sy).at(sx), Pair(sy, sx)));//コストと共に次の探索候補を入れておく
 		}
