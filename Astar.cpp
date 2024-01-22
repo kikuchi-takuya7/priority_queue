@@ -110,7 +110,7 @@ void Astar::Astar_Basic()
 		PP now = que_.top();//¡‚¢‚éêŠ‚ğŠm•Û
 		que_.pop();
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 8; i++) {
 
 			total_++;
 
@@ -159,7 +159,7 @@ void Astar::Path_Search()
 
 	while (true) {
 
-		for (int n = 0; n < 4; n++) {
+		for (int n = 0; n < 8; n++) {
 			int y = i;
 			int x = f;
 			y += moveY[n]; //ã‰º’Tõ
@@ -183,8 +183,8 @@ void Astar::Path_Search()
 
 int Astar::Heuristic(int _x, int _y)
 {
-	int x = _x - goal_.second;
-	int y = _y - goal_.first;
+	int x = abs(_x - goal_.second);
+	int y = abs(_y - goal_.first);
 
-	return abs(x + y);
+	return std::max(x,y);
 }

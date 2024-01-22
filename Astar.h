@@ -5,11 +5,11 @@
 #include <stack>
 #include <functional> // std::greater
 
-//const int moveY[8] = { 0, 0, 1,-1, 1 ,1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-//const int moveX[8] = { 1,-1, 0, 0, 1,-1 ,1,-1 };
+const int moveY[8] = { 0, 0, 1,-1, 1 ,1,-1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
+const int moveX[8] = { 1,-1, 0, 0, 1,-1 ,1,-1 };
 
-const int moveY[4] = { 0,0,1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
-const int moveX[4] = { 1,-1,0,0 };
+//const int moveY[4] = { 0,0,1,-1 };//上下左右に移動（探索）するための配列。二つまとめて縦に見ると上下左右
+//const int moveX[4] = { 1,-1,0,0 };
 
 using std::vector;
 using std::pair;
